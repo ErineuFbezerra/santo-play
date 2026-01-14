@@ -7,7 +7,7 @@
 
   <meta name="theme-color" content="#0b0f17" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="estilo.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
@@ -16,7 +16,7 @@
   <div class="wrap">
     <header class="top">
       <div class="brand">
-        <div class="mark" aria-hidden="true">▶</div>
+        <img src="logo.png" alt="Santo Play" class="logo">
         <div class="name">
           <h1>Santo<span>Play</span></h1>
           <p>playlists com propósito</p>
@@ -29,29 +29,26 @@
       <p class="sub">Som contínuo, leve e sem distrações.</p>
 
       <div class="actions">
-        <button class="btn primary" type="button" onclick="playLouvor()">
+        <button class="btn primary" onclick="playLouvor()">
           ▶ Reproduzir agora
         </button>
-        <button class="btn ghost" type="button" onclick="alert('Em breve: playlists por propósito ✨')">
+        <button class="btn ghost">
           Ver playlists
         </button>
       </div>
 
       <div class="meta">
-        <div class="pill">🔊 Áudio</div>
-        <div class="pill">🕊️ Presença</div>
-        <div class="pill">📱 Futuro App</div>
+        <span class="pill">🔊 Áudio contínuo</span>
+        <span class="pill">🕊️ Presença</span>
+        <span class="pill">📱 App instalável</span>
       </div>
     </main>
 
     <footer class="foot">
-      <small>© <span id="y"></span> Santo Play</small>
+      <small>© 2026 Santo Play</small>
     </footer>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    document.getElementById("y").textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
