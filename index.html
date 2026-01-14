@@ -1,41 +1,57 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Santo Play</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a0a0a">
-
+  <meta name="theme-color" content="#0b0f17" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="estilo.css" />
 </head>
+
 <body>
+  <div class="bg"></div>
 
-  <div class="app">
-
-    <header>
-      <h1>Santo<span>Play</span></h1>
-      <p>playlists com propósito</p>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">▶</div>
+        <div class="name">
+          <h1>Santo<span>Play</span></h1>
+          <p>playlists com propósito</p>
+        </div>
+      </div>
     </header>
 
-    <main>
-      <button class="play-btn" onclick="playLouvor()">
-        ▶ Entrar no Secreto
-      </button>
+    <main class="card">
+      <h2>Entrar no Secreto</h2>
+      <p class="sub">Som contínuo, leve e sem distrações.</p>
 
-      <div class="info">
-        <p>Som contínuo · Sem distrações · Para o secreto</p>
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="playLouvor()">
+          ▶ Reproduzir agora
+        </button>
+        <button class="btn ghost" type="button" onclick="alert('Em breve: playlists por propósito ✨')">
+          Ver playlists
+        </button>
+      </div>
+
+      <div class="meta">
+        <div class="pill">🔊 Áudio</div>
+        <div class="pill">🕊️ Presença</div>
+        <div class="pill">📱 Futuro App</div>
       </div>
     </main>
 
-    <footer>
-      <small>© 2026 Santo Play</small>
+    <footer class="foot">
+      <small>© <span id="y"></span> Santo Play</small>
     </footer>
-
   </div>
 
   <script src="app.js"></script>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
