@@ -1,6 +1,7 @@
+// Santo Play - ação do botão "Reproduzir agora"
+// Opção mais estável: abrir uma busca (nunca fica "indisponível")
 function playLouvor() {
-  window.open(
-    "https://www.youtube.com/watch?v=UqX6g7Wzj9Y",
-    "_blank"
-  );
+  const query = encodeURIComponent("louvor e adoração presença de Deus");
+  const url = `https://www.youtube.com/results?search_query=${query}`;
+  window.open(url, "_blank", "noopener,noreferrer");
 }
