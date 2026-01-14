@@ -240,4 +240,158 @@ function renderPlaylists(){
     return;
   }
 
-  playlists.forEach((pl, idx)=>
+  playlists.forEach((pl, idx)=>{
+    const el = document.createElement("div");
+    el.className = "pl";
+    const count = (pl.items || []).length;
+
+    el.innerHTML = `
+      <div class="left">
+        <div class="title">${escapeHtml(pl.name)}</div>
+        <div class="small">${count} item(ns)</div>
+      </div>
+      <div class="actions">
+        <button class="btn small" data-act="ver">Ver</button>
+        <button class="btn small" data-act="addfav">Adicionar favoritos</button>
+        <button class="btn small" data-act="del">Excluir</button>
+      </div>
+    `;
+
+    el.querySelector('[data-act="ver"]').addEventListener("click", ()=> viewPlaylist(idx));
+    el.querySelector('[data-act="addfav"]').addEventListener("click", ()=> addFavsToPlaylist(idx));
+    el.querySelector('[data-act="del"]').addEventListener("click", ()=> deletePlaylist(idx));
+    root.appendChild(el);
+  });
+}
+
+function createPlaylist(name){
+  const n = (name || "").trim();
+  if(!n) return;
+  playlists.unshift({name:n, items:[]});
+  saveJson(LS_PL, playlists);
+  renderPlaylists();
+  setStatus("Playlist criada.");
+}
+
+function deletePlaylist(idx){
+  if(!confirm("Excluir essa playlist?")) return;
+  playlists.splice(idx,1);
+  saveJson(LS_PL, playlists);
+  renderPlaylists();
+  setStatus("Playlist excluída.");
+}
+
+function addFavsToPlaylist(idx){
+  const pl = playlists[idx];
+  if(!pl) return;
+  const existing = new Set((pl.items||[]).map(x=>x.stationuuid));
+  (favs||[]).forEach(st=>{
+    if(!existing.has(st.stationuuid)){
+      pl.items.push(normalizeStation(st));
+      existing.add(st.stationuuid);
+    }
+  });
+  saveJson(LS_PL, playlists);
+  setStatus("Favoritos adicionados na playlist.");
+}
+
+function addToPlaylistPrompt(st){
+  if(playlists.length === 0){
+    alert("Crie uma playlist primeiro (aba Playlists).");
+    return;
+  }
+  const names = playlists.map((p,i)=> `${i+1}) ${p.name}`).join("\n");
+  const choice = prompt(`Adicionar em qual playlist?\n${names}\n\nDigite o número:`);
+  const n = Number(choice);
+  if(!n || n<1 || n>playlists.length) return;
+
+  const pl = playlists[n-1];
+  pl.items = pl.items || [];
+  if(pl.items.some(x=>x.stationuuid === st.stationuuid)){
+    setStatus("Já existe nessa playlist.");
+    return;
+  }
+  pl.items.push(normalizeStation(st));
+  saveJson(LS_PL, playlists);
+  setStatus(`Adicionado em "${pl.name}".`);
+}
+
+function viewPlaylist(idx){
+  const pl = playlists[idx];
+  if(!pl) return;
+  const items = pl.items || [];
+  if(items.length === 0){
+    alert("Playlist vazia. Adicione rádios (botão ➕ Playlist) ou 'Adicionar favoritos'.");
+    return;
+  }
+  const list = items.map((x,i)=> `${i+1}) ${x.name}`).join("\n");
+  const choice = prompt(`Playlist: ${pl.name}\n\nEscolha um número para tocar:\n${list}`);
+  const n = Number(choice);
+  if(!n || n<1 || n>items.length) return;
+  playStation(items[n-1]);
+}
+
+function wireTabs(){
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const tab = btn.dataset.tab;
+      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+      $("#"+tab).classList.add("active");
+    });
+  });
+}
+
+function wirePlayerButtons(){
+  $("#btnPlay").addEventListener("click", ()=> audio.play().catch(()=>setStatus("Clique no player para permitir áudio.")));
+  $("#btnPause").addEventListener("click", ()=> audio.pause());
+  $("#btnStop").addEventListener("click", ()=>{
+    audio.pause();
+    audio.currentTime = 0;
+    setStatus("Parado.");
+  });
+
+  $("#btnFav").addEventListener("click", ()=>{
+    if(!currentStation){ setStatus("Nada tocando para favoritar."); return; }
+    toggleFav(currentStation);
+  });
+
+  audio.addEventListener("playing", ()=> setStatus("Tocando…"));
+  audio.addEventListener("pause", ()=> setStatus("Pausado."));
+  audio.addEventListener("error", ()=> setStatus("Erro ao tocar. Tente outra rádio."));
+}
+
+function init(){
+  $("#year").textContent = new Date().getFullYear();
+
+  wireTabs();
+  wirePlayerButtons();
+
+  $("#btnTopGospel").addEventListener("click", playTopGospel);
+  $("#btnRandomGospel").addEventListener("click", playRandomGospel);
+
+  $("#btnSearch").addEventListener("click", ()=> searchStations($("#q").value));
+  $("#btnByTag").addEventListener("click", byTagGospel);
+  $("#q").addEventListener("keydown", (e)=> { if(e.key==="Enter") searchStations($("#q").value); });
+
+  $("#btnClearFav").addEventListener("click", ()=>{
+    if(!confirm("Limpar favoritos?")) return;
+    favs = [];
+    saveJson(LS_FAV, favs);
+    renderFavs();
+    setStatus("Favoritos limpos.");
+  });
+
+  $("#btnCreatePl").addEventListener("click", ()=>{
+    createPlaylist($("#plName").value);
+    $("#plName").value = "";
+  });
+
+  renderFavs();
+  renderPlaylists();
+  loadTopGospel();
+}
+
+init();
