@@ -2,52 +2,139 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Santo Play</title>
 
   <meta name="theme-color" content="#0b0f17" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <div class="bg"></div>
 
-  <div class="wrap">
-    <header class="top">
-      <div class="brand">
-        <img src="logo.png" alt="Santo Play" class="logo">
-        <div class="name">
-          <h1>Santo<span>Play</span></h1>
-          <p>playlists com propósito</p>
+  <header class="header">
+    <div class="brand">
+      <img class="logo" src="logo.png" alt="Santo Play" />
+      <div class="brandText">
+        <h1>Santo<span>Play</span></h1>
+        <p>louvor contínuo • busca • favoritos</p>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="Navegação">
+      <button class="tab active" data-tab="inicio">Início</button>
+      <button class="tab" data-tab="buscar">Buscar</button>
+      <button class="tab" data-tab="favoritos">Favoritos</button>
+      <button class="tab" data-tab="playlists">Playlists</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- INÍCIO -->
+    <section class="panel active" id="inicio">
+      <div class="hero">
+        <div>
+          <h2>Entrar no Secreto</h2>
+          <p class="muted">Agora é player interno (sem YouTube). Rádios gospel do mundo inteiro.</p>
+
+          <div class="ctaRow">
+            <button class="btn primary" id="btnTopGospel">▶ Tocar Gospel (Top)</button>
+            <button class="btn ghost" id="btnRandomGospel">🎲 Aleatório</button>
+          </div>
+
+          <div class="pills">
+            <span class="pill">🔊 Player interno</span>
+            <span class="pill">🌍 Radio Browser API</span>
+            <span class="pill">⭐ Favoritos</span>
+            <span class="pill">📻 Rádio Gospel</span>
+          </div>
+        </div>
+
+        <div class="cardNow">
+          <div class="nowTitle">Tocando agora</div>
+          <div class="nowName" id="nowName">Nada tocando</div>
+          <div class="nowMeta" id="nowMeta">Escolha uma rádio para começar.</div>
+
+          <div class="playerBox">
+            <audio id="audio" controls preload="none"></audio>
+          </div>
+
+          <div class="playerActions">
+            <button class="btn small" id="btnPlay">Play</button>
+            <button class="btn small" id="btnPause">Pause</button>
+            <button class="btn small" id="btnStop">Stop</button>
+            <button class="btn small" id="btnFav">⭐ Favoritar</button>
+          </div>
+
+          <div class="status" id="status">Pronto.</div>
         </div>
       </div>
-    </header>
 
-    <main class="card">
-      <h2>Entrar no Secreto</h2>
-      <p class="sub">Som contínuo, leve e sem distrações.</p>
+      <div class="listBox">
+        <div class="listHeader">
+          <h3>Top rádios gospel</h3>
+          <span class="muted">Carregadas pela API grátis</span>
+        </div>
+        <div class="grid" id="topGrid"></div>
+      </div>
+    </section>
 
-      <div class="actions">
-        <button class="btn primary" onclick="playLouvor()">
-          ▶ Reproduzir agora
-        </button>
-        <button class="btn ghost">
-          Ver playlists
-        </button>
+    <!-- BUSCAR -->
+    <section class="panel" id="buscar">
+      <div class="searchBar">
+        <input id="q" type="text" placeholder="Buscar rádio gospel (ex: louvor, adoração, worship, gospel)..." />
+        <button class="btn primary" id="btnSearch">Buscar</button>
+        <button class="btn ghost" id="btnByTag">Tag gospel</button>
       </div>
 
-      <div class="meta">
-        <span class="pill">🔊 Áudio contínuo</span>
-        <span class="pill">🕊️ Presença</span>
-        <span class="pill">📱 App instalável</span>
+      <div class="listBox">
+        <div class="listHeader">
+          <h3>Resultados</h3>
+          <span class="muted" id="resultInfo">Faça uma busca.</span>
+        </div>
+        <div class="grid" id="resultsGrid"></div>
       </div>
-    </main>
+    </section>
 
-    <footer class="foot">
-      <small>© 2026 Santo Play</small>
-    </footer>
-  </div>
+    <!-- FAVORITOS -->
+    <section class="panel" id="favoritos">
+      <div class="listBox">
+        <div class="listHeader">
+          <h3>Favoritos</h3>
+          <div class="right">
+            <button class="btn ghost" id="btnClearFav">Limpar</button>
+          </div>
+        </div>
+        <div class="grid" id="favGrid"></div>
+      </div>
+    </section>
+
+    <!-- PLAYLISTS -->
+    <section class="panel" id="playlists">
+      <div class="playlistTop">
+        <div>
+          <h3>Playlists (simples e profissional)</h3>
+          <p class="muted">Crie playlists por propósito: Secreto, Oração, Treino, Culto…</p>
+        </div>
+        <div class="playlistActions">
+          <input id="plName" type="text" placeholder="Nome da playlist (ex: Secreto)" />
+          <button class="btn primary" id="btnCreatePl">Criar</button>
+        </div>
+      </div>
+
+      <div class="listBox">
+        <div class="listHeader">
+          <h3>Minhas playlists</h3>
+          <span class="muted">Você pode adicionar rádios aos seus favoritos e depois inserir na playlist.</span>
+        </div>
+        <div class="playlists" id="plList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <small>© <span id="year"></span> Santo Play • v2</small>
+  </footer>
 
   <script src="app.js"></script>
 </body>
